@@ -19,7 +19,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  String file_path = 'assets/sample.rar';
+  String asset_file_path = 'assets/sample5.rar';
+  String file_path;
   String destination_path ;
   @override
   void initState() {
@@ -34,15 +35,14 @@ class _MyAppState extends State<MyApp> {
     print("inside init platform state");
 
     Directory tempDir = await getTemporaryDirectory();
-    file_path = join(tempDir.path, "sample.rar");
+    file_path = join(tempDir.path, basename(asset_file_path));
     // inside the file_path first copy the file from the assets folder.
     // as there I dont know direct way to find the asset folder.
 
-    ByteData data = await rootBundle.load("assets/sample.rar");
+    ByteData data = await rootBundle.load(asset_file_path);
     List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     await File(file_path).writeAsBytes(bytes);
     destination_path = tempDir.path;
-    String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       await UnrarFile.extract_rar(file_path,  destination_path);
@@ -50,21 +50,12 @@ class _MyAppState extends State<MyApp> {
           .listen((FileSystemEntity entity) {
         print(entity.path);
       });
-      platformVersion = "extraction_done";
       print("extraction done.");
     } catch(e) {
       print("extraction failed");
-      platformVersion = e;
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
 
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override

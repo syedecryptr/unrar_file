@@ -1,7 +1,7 @@
 name: unrar_file
 description: archive a rar file using junrar android code on github.
 version: 0.0.1
-homepage:
+homepage: https://github.com/syedecryptr/unrar_file
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

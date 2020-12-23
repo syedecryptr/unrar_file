@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.github.junrar.Junrar;
 import com.github.junrar.exception.RarException;
+import com.github.junrar.exception.UnsupportedRarV5Exception;
 
 import java.io.IOException;
 
@@ -39,11 +40,17 @@ public class UnrarFilePlugin implements FlutterPlugin, MethodCallHandler {
 //      result.success("extraction done");
       try {
         Junrar.extract(file_path, destination_path);
-        result.success("Android " + android.os.Build.VERSION.RELEASE);
+        result.success("Extraction Success");
+
+      }
+      catch (UnsupportedRarV5Exception e ){
+
+        result.error("extractionRAR5Error", e.toString(), null);
 
       }
       catch (IOException | RarException e){
-        result.error("extractionError", e.getMessage(), null);
+
+        result.error("extractionError", e.toString(), null);
       }
     } else {
       result.notImplemented();

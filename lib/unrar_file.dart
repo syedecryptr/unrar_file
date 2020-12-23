@@ -1,8 +1,10 @@
 
 import 'dart:async';
-
+import 'package:unrar_file/src/rarFile.dart';
+import 'package:unrar_file/src/rar_decoder.dart';
+import 'dart:io';
 import 'package:flutter/services.dart';
-
+import 'package:path/path.dart';
 class UnrarFile {
   static const MethodChannel _channel =
       const MethodChannel('unrar_file');
@@ -13,7 +15,23 @@ class UnrarFile {
       return result;
     }
     on PlatformException catch(e){
-      throw e.message;
+      if(e.code == "extractionRAR5Error"){
+        try {
+          var rar_file = RAR5(file_path);
+          var files = rar_file.files;
+          for (RarFile file in files) {
+            var file_to_save = File(join(destination_path, file.name));
+            file_to_save.writeAsBytesSync(file.content);
+          }
+          return "Extraction Success";
+        }
+        catch(e){
+          throw e.toString();
+        }
+      }
+      else{
+        throw e.message;
+      }
     }
   }
 }
