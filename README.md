@@ -4,6 +4,8 @@ Flutter Package to :
 
 Archive a rar file using junrar android code on github.
 
+It additionally supports RAR5 which junrar don't.
+
 ## Getting Started
 
 This project is a starting point for a Flutter
