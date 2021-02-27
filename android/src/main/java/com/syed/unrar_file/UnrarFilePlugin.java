@@ -25,6 +25,11 @@ public class UnrarFilePlugin implements FlutterPlugin, MethodCallHandler {
   /// when the Flutter Engine is detached from the Activity
   private MethodChannel channel;
 
+  public static boolean isNullOrEmpty(String str) {
+    if(str != null && !str.isEmpty())
+      return false;
+    return true;
+  }
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "unrar_file");
@@ -36,10 +41,15 @@ public class UnrarFilePlugin implements FlutterPlugin, MethodCallHandler {
     if (call.method.equals("extractRAR")) {
       final String file_path = call.argument("file_path");
       final String destination_path = call.argument("destination_path");
-      Log.i("extractRAR", "arguments recieved : " + file_path + " " + destination_path);
+      final String password = call.argument("password");
 //      result.success("extraction done");
       try {
-        Junrar.extract(file_path, destination_path);
+        if(isNullOrEmpty(password)) {
+          Junrar.extract(file_path, destination_path);
+        }
+        else{
+          Junrar.extract(file_path, destination_path, password);
+        }
         result.success("Extraction Success");
 
       }

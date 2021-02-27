@@ -9,9 +9,9 @@ class UnrarFile {
   static const MethodChannel _channel =
       const MethodChannel('unrar_file');
 
-  static Future<String> extract_rar(file_path, destination_path) async {
+  static Future<String> extract_rar(file_path, destination_path, {password=""}) async {
     try {
-      var result = await _channel.invokeMethod('extractRAR', {"file_path": file_path, "destination_path": destination_path});
+      var result = await _channel.invokeMethod('extractRAR', {"file_path": file_path, "destination_path": destination_path, "password":password});
       return result;
     }
     on PlatformException catch(e){
