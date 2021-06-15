@@ -9,7 +9,7 @@ class UnrarFile {
   static const MethodChannel _channel =
       const MethodChannel('unrar_file');
 
-  static Future<String> extract_rar(file_path, destination_path, {password=""}) async {
+  static Future<String?> extract_rar(file_path, destination_path, {password=""}) async {
     try {
       var result = await _channel.invokeMethod('extractRAR', {"file_path": file_path, "destination_path": destination_path, "password":password});
       return result;
@@ -21,7 +21,7 @@ class UnrarFile {
           var files = rar_file.files;
           for (RarFile file in files) {
             var file_to_save = File(join(destination_path, file.name));
-            file_to_save.writeAsBytesSync(file.content);
+            file_to_save.writeAsBytesSync(file.content!);
           }
           return "Extraction Success";
         }
@@ -30,7 +30,7 @@ class UnrarFile {
         }
       }
       else{
-        throw e.message;
+        throw e.message!;
       }
     }
   }

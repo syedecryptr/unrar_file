@@ -39,7 +39,7 @@ class VINT {
 
 extension Bytes on List {
   int merge([bool littleEndian = false]) {
-    return Uint8List.fromList(littleEndian ? this.reversed.toList() : this)
+    return Uint8List.fromList(littleEndian ? this.reversed.toList() as List<int> : this as List<int>)
         .reduce((value, newElement) => newElement | (value << 8));
   }
 }

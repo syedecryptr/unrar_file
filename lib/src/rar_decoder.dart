@@ -7,15 +7,15 @@ import 'vint.dart';
 
 class RAR5 {
   static const SIGNATURE = 0x0001071A21726152; //[0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00];
-  MAIN_ARCHIVE_HEADER MAIN_HEAD;
-  ARCHIVE_ENCRYPTION ARCHIVE_ENCRYPTION_BLOCK;
+  MAIN_ARCHIVE_HEADER? MAIN_HEAD;
+  ARCHIVE_ENCRYPTION? ARCHIVE_ENCRYPTION_BLOCK;
   List<FILE_SERVICE_BLOCK> SERVICE_BLOCKS = [];
   List<RarFile> _files = [];
-  END_OF_ARCHIVE END_OF_ARCHIVE_BLOCK;
+  END_OF_ARCHIVE? END_OF_ARCHIVE_BLOCK;
 
   List<RarFile> hierarchy = [];
 
-  String get comment => utf8.decode(SERVICE_BLOCKS.first?.DATA_AREA);
+  String get comment => utf8.decode(SERVICE_BLOCKS.first.DATA_AREA!);
 
   get files => _files;
 
@@ -80,7 +80,7 @@ class RAR5 {
   }
 
   /// Prints file hierarchy inside the archive
-  void showFiles([List<RarFile> listOfNodes, int level]) {
+  void showFiles([List<RarFile>? listOfNodes, int? level]) {
     if (listOfNodes == null) {
       listOfNodes = _files;
     }
@@ -99,10 +99,10 @@ class RAR5 {
 }
 
 class Header {
-  int HEAD_CRC; // 4 bytes
-  int HEAD_TYPE; // vint
-  int HEAD_FLAGS; // vint
-  int HEAD_SIZE; // vint
+  int? HEAD_CRC; // 4 bytes
+  int? HEAD_TYPE; // vint
+  late int HEAD_FLAGS; // vint
+  int? HEAD_SIZE; // vint
 
   Header(RandomAccessFile file) {
     HEAD_CRC = file.readSync(4).merge(true);
@@ -119,19 +119,19 @@ abstract class Block {
 }
 
 class MAIN_ARCHIVE_HEADER extends Block {
-  int EXTRA_AREA_SIZE, ARCHIVE_FLAGS, VOLUME_NUMBER;
+  int? EXTRA_AREA_SIZE, ARCHIVE_FLAGS, VOLUME_NUMBER;
   var EXTRA_AREA;
 
   MAIN_ARCHIVE_HEADER(RandomAccessFile file, Header header) : super(header) {
     EXTRA_AREA_SIZE = (super.header.HEAD_FLAGS & 0x0001 != 0) ? VINT.fromFile(file).result : null;
     ARCHIVE_FLAGS = VINT.fromFile(file).result;
     VOLUME_NUMBER = (super.header.HEAD_FLAGS & 0x0002 != 0) ? VINT.fromFile(file).result : null;
-    EXTRA_AREA = (super.header.HEAD_FLAGS & 0x0001 != 0) ? file.readSync(EXTRA_AREA_SIZE) : null;
+    EXTRA_AREA = (super.header.HEAD_FLAGS & 0x0001 != 0) ? file.readSync(EXTRA_AREA_SIZE!) : null;
   }
 }
 
 class FILE_SERVICE_BLOCK extends Block {
-  int EXTRA_AREA_SIZE,
+  int? EXTRA_AREA_SIZE,
       DATA_SIZE,
       FILE_FLAGS,
       UNP_SIZE,
@@ -142,9 +142,9 @@ class FILE_SERVICE_BLOCK extends Block {
       HOST_OS,
       NAME_SIZE;
 
-  Uint8List EXTRA_AREA;
+  Uint8List? EXTRA_AREA;
 
-  Uint8List DATA_AREA, NAME;
+  Uint8List? DATA_AREA, NAME;
 
   FILE_SERVICE_BLOCK(RandomAccessFile file, Header header) : super(header) {
     EXTRA_AREA_SIZE = (super.header.HEAD_FLAGS & 0x0001 != 0) ? VINT.fromFile(file).result : null;
@@ -152,19 +152,19 @@ class FILE_SERVICE_BLOCK extends Block {
     FILE_FLAGS = VINT.fromFile(file).result;
     UNP_SIZE = VINT.fromFile(file).result;
     ATTRIBUTES = VINT.fromFile(file).result;
-    MTIME = (FILE_FLAGS & 0x0002 != 0) ? file.readSync(4).merge(true) : null;
-    DATA_CRC = (FILE_FLAGS & 0x0004 != 0) ? file.readSync(4).merge(true) : null;
+    MTIME = (FILE_FLAGS! & 0x0002 != 0) ? file.readSync(4).merge(true) : null;
+    DATA_CRC = (FILE_FLAGS! & 0x0004 != 0) ? file.readSync(4).merge(true) : null;
     COMPRESSION_INFO = VINT.fromFile(file).result;
     HOST_OS = VINT.fromFile(file).result;
     NAME_SIZE = VINT.fromFile(file).result;
-    NAME = file.readSync(NAME_SIZE);
-    EXTRA_AREA = (super.header.HEAD_FLAGS & 0x0001 != 0) ? file.readSync(EXTRA_AREA_SIZE) : null;
-    DATA_AREA = (super.header.HEAD_FLAGS & 0x0002 != 0) ? file.readSync(DATA_SIZE) : null;
+    NAME = file.readSync(NAME_SIZE!);
+    EXTRA_AREA = (super.header.HEAD_FLAGS & 0x0001 != 0) ? file.readSync(EXTRA_AREA_SIZE!) : null;
+    DATA_AREA = (super.header.HEAD_FLAGS & 0x0002 != 0) ? file.readSync(DATA_SIZE!) : null;
   }
 }
 
 class END_OF_ARCHIVE extends Block {
-  int END_OF_ARCHIVE_FLAGS;
+  int? END_OF_ARCHIVE_FLAGS;
 
   END_OF_ARCHIVE(RandomAccessFile file, Header header) : super(header) {
     END_OF_ARCHIVE_FLAGS = VINT.fromFile(file).result;
@@ -172,11 +172,11 @@ class END_OF_ARCHIVE extends Block {
 }
 
 class ARCHIVE_ENCRYPTION extends Block {
-  int ENCYRPTION_VERSION; // vint
-  int ENCYRPTION_FLAGS; // vint
-  int KDF_COUNT; // 1 byte
-  int SALT; // 16 bytes
-  int CHECK_VALUE; // 12 bytes
+  int? ENCYRPTION_VERSION; // vint
+  int? ENCYRPTION_FLAGS; // vint
+  int? KDF_COUNT; // 1 byte
+  int? SALT; // 16 bytes
+  int? CHECK_VALUE; // 12 bytes
 
   ARCHIVE_ENCRYPTION(RandomAccessFile file, Header header) : super(header) {
     ENCYRPTION_VERSION = VINT.fromFile(file).result;
