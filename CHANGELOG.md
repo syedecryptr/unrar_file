@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Added Null-Safety
+
 ## 0.1.1
 
 * Added functionality of password protected RAR files (password protected RAR5 not supported).
