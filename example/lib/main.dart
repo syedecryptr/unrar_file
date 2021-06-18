@@ -22,9 +22,9 @@ class _MyAppState extends State<MyApp> {
   String rar_path = 'assets/sample.rar';
   String rar5_path = 'assets/sample5.rar';
   String rar_password_path = "assets/rar4-password-junrar.rar";
-  String file_path;
-  String destination_path ;
-  Directory tempDir;
+  late String file_path;
+  late String destination_path ;
+  late Directory tempDir;
 
   extraction() async{
     await extract_file(rar_path);
@@ -53,7 +53,12 @@ class _MyAppState extends State<MyApp> {
     // for this example
     // inside tempDir rar files kept and later
     // extracted outputs are also stored in the same directory.
-    tempDir = await getTemporaryDirectory();
+    if (Platform.isIOS) {
+      tempDir = await getApplicationDocumentsDirectory();
+    }
+    else{
+      tempDir = await getTemporaryDirectory();
+    }
     //empty the directory removing previous results.
     await delete_file();
     var input_path = join(tempDir.path, basename(asset_file_path));
@@ -72,7 +77,8 @@ class _MyAppState extends State<MyApp> {
     var destination_path = input_output[1];
     // Extraction may fail, so we use a try/catch PlatformException.
     try {
-      await UnrarFile.extract_rar(input_file_path,  destination_path, password: password);
+      var result = await UnrarFile.extract_rar(input_file_path,  destination_path, password: password);
+      print(result);
       await print_files();
     } catch(e) {
 
