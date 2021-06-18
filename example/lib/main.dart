@@ -53,7 +53,12 @@ class _MyAppState extends State<MyApp> {
     // for this example
     // inside tempDir rar files kept and later
     // extracted outputs are also stored in the same directory.
-    tempDir = await getApplicationDocumentsDirectory();
+    if (Platform.isIOS) {
+      tempDir = await getApplicationDocumentsDirectory();
+    }
+    else{
+      tempDir = await getTemporaryDirectory();
+    }
     //empty the directory removing previous results.
     await delete_file();
     var input_path = join(tempDir.path, basename(asset_file_path));
