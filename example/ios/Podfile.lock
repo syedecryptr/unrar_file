@@ -1,0 +1,37 @@
+PODS:
+  - Flutter (1.0.0)
+  - path_provider (0.0.1):
+    - Flutter
+  - unrar_file (0.0.1):
+    - Flutter
+    - UnrarKit
+  - UnrarKit (2.9):
+    - UnrarKit/unrar-lib (= 2.9)
+  - UnrarKit/unrar-lib (2.9)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - unrar_file (from `.symlinks/plugins/unrar_file/ios`)
+
+SPEC REPOS:
+  trunk:
+    - UnrarKit
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  unrar_file:
+    :path: ".symlinks/plugins/unrar_file/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  unrar_file: ead248ffb2e777cb67f083bc1bb1fb45d4157dbd
+  UnrarKit: 99e3f0222a98a212188e1a6975dcf5aa798d26dd
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.10.1

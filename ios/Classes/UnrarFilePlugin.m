@@ -1,4 +1,9 @@
 #import "UnrarFilePlugin.h"
+@import UnrarKit;
+
+static inline NSString* NSStringFromBOOL(BOOL aBool) {
+    return aBool? @"SUCCESS" : @"FAILURE";
+}
 
 @implementation UnrarFilePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
@@ -10,8 +15,22 @@
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-  if ([@"getPlatformVersion" isEqualToString:call.method]) {
-    result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
+  if ([@"extractRAR" isEqualToString:call.method]) {
+    NSString* file_path = call.arguments[@"file_path"];
+    NSString* destination_path = call.arguments[@"destination_path"];
+    NSString* password = call.arguments[@"password"];
+    NSError *archiveError = nil;
+    URKArchive *archive = [[URKArchive alloc] initWithPath:file_path
+                                                 error:&archiveError];
+    NSError *error = nil;
+      BOOL extractFilesSuccessful;
+    if (archive.isPasswordProtected && password.length!=0) {
+        archive.password = password;
+    }
+    extractFilesSuccessful = [archive extractFilesTo:destination_path overwrite:NO
+        error:&error];
+    
+    result(NSStringFromBOOL(extractFilesSuccessful));
   } else {
     result(FlutterMethodNotImplemented);
   }
