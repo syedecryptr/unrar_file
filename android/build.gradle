@@ -35,7 +35,7 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
-
+    namespace "com.syed.unrar_file_example"
     dependencies{
         implementation "com.github.junrar:junrar:7.4.0"
 
